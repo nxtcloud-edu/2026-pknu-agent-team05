@@ -5,8 +5,8 @@
 
 ## 현재 위치
 
-- 단계 — CONSTRUCTION STEP 02 · schedule-core
-- 다음에 할 일 — schedule-core STEP 05 코드 생성 (03·04 건너뜀) — schedule-core-code-generation-plan.md 작성 후 게이트 1
+- 단계 — CONSTRUCTION STEP 05 · schedule-core
+- 다음에 할 일 — 둘째 단위 route-planning · STEP 01 기능 설계 — route-planning-functional-design-plan.md 작성 후 게이트 1
 - 마지막 갱신 — 2026-08-26
 
 ## 단계는 이렇게 돈다
@@ -51,7 +51,7 @@ INCEPTION STEP 07 에서 단위가 정해지면 채운다. **한 단위를 끝�
 
 | 단위 | 01 기능설계 | 02 비기능요구 | 03 비기능설계 | 04 인프라설계 | 05 코드생성 |
 |---|---|---|---|---|---|
-| schedule-core | 완료 · domain-entities · business-rules · business-logic-model · frontend-components | 완료 · tech-stack-decisions · nfr-requirements (TS+React·localStorage·Vitest·Vite·Tailwind) |               |               |             |
+| schedule-core | 완료 · domain-entities · business-rules · business-logic-model · frontend-components | 완료 · tech-stack-decisions · nfr-requirements (TS+React·localStorage·Vitest·Vite·Tailwind) |               |               | 완료 · 코드는 루트 src/ · 테스트 116 통과 · code/summary.md |
 
 ### 전부 합쳐 한 번
 

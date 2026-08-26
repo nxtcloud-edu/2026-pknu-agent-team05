@@ -260,3 +260,46 @@ nfr-requirements.md — U-NFR-1 시각 다루기 · U-NFR-2 검증 · U-NFR-3 �
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 12:52 · CONSTRUCTION schedule-core STEP 05 코드 생성 · 게이트 1
+
+- 물은 것: schedule-core 코드 생성 계획과 질문 4개를 만들었습니다 — aidlc-docs/construction/plans/schedule-core-code-generation-plan.md (Q1 화면 완성도, Q2 주석·문구 언어, Q3 처음 열었을 때, Q4 키보드·낭독기 지원). 승인하면 루트 src/ 에 실제 코드를 만듭니다. 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:C
+Q2 [Answer]:A
+Q3 [Answer]:C
+Q4 [Answer]:B
+
+### 2026-08-26 13:20 · CONSTRUCTION schedule-core STEP 05 코드 생성 · 게이트 2
+
+- 물은 것: schedule-core 코드를 만들었습니다. 실제 코드는 루트 src/ 에, 요약은 aidlc-docs/construction/schedule-core/code/summary.md 에 있습니다.
+
+검증 결과
+npm test — 4 파일 116개 통과
+npm run typecheck — 통과
+npm run build — 통과 (CSS 20.79 kB · JS 227.95 kB / gzip 70.65 kB)
+
+만든 것
+프로젝트 — React 19.2.8 · TypeScript 7.0.2 · Vite 8.2.2 · Vitest 4.1.11 · Tailwind CSS 4.3.3. 버전을 ^ 범위 없이 정확한 값으로 박았습니다.
+src/domain/ — schedule/types.ts (E-1~E-6) · schedule/rules.ts (BR-1~BR-8 등) · schedule/expand.ts (C-1 펼치기) · time/index.ts (BR-48·BR-49) · settings/index.ts (E-7) · handoff.ts (경계 1)
+src/storage/ — localStore.ts (localStorage 를 직접 부르는 유일한 곳) · repository.ts (함께 지우기 · 예외 · 전체 삭제)
+src/ui/ — DayView (V-1) · SchedulePanel (V-2) · DaySettingPanel (V-7) · DataPanel (V-9) · PlaceInput · parts
+src/app/ — store.ts (화면과 층 2 를 잇는 자리) · App.tsx (패널 열림·닫힘 규칙)
+
+완료 기준 (Q3-B) — business-logic-model.md 의 경계 상황 14가지가 모두 테스트로 통과합니다. 경계 당일(언제부터·언제까지)까지 포함했습니다.
+
+짚어야 할 것 세 가지
+1. 확인하지 못한 것 — 화면이 실제로 브라우저에 그려지는지는 확인하지 못했습니다. 개발 서버가 HTML·모듈·CSS(Tailwind 클래스 생성 확인)를 내려주는 것까지는 확인했지만 React 렌더링 결과는 브라우저에서 봐야 합니다. Q3-B·Q5-A 에 따라 CONSTRUCTION 06 으로 넘겼습니다. localStorage 에 실제로 남는지도 테스트에서는 메모리 자리로 확인했습니다.
+2. Q4-B 를 따라 aria 속성과 낭독기 지원을 별도로 넣지 않았습니다. 다만 button·input·label 같은 기본 요소는 그대로 썼습니다(div 로 단추를 만드는 것이 더 긴 코드가 되기 때문입니다). 결과적으로 탭 이동과 엔터는 브라우저 기본 동작으로 됩니다.
+3. vite.config.ts 에서 defineConfig 를 vite 에서 가져왔더니 test 옵션이 타입에 없어 typecheck 가 실패했습니다. vitest/config 에서 가져오도록 고쳤습니다. 코드 작성 중 발견해 바로 고친 것이라 실수 기록에는 남기지 않았습니다.
+
+설계와 다르게 만든 것은 없습니다. 계획 체크리스트 27항 전부 [x] 로 바꿨습니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
