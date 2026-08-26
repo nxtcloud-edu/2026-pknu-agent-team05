@@ -226,3 +226,37 @@ Q2-C — 후보를 골라 확정하는 흐름인데, 주소를 좌표로 바꾸�
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 12:44 · CONSTRUCTION schedule-core STEP 02 비기능 요구 · 게이트 1
+
+- 물은 것: schedule-core 비기능 요구 계획과 질문 5개를 만들었습니다 — aidlc-docs/construction/plans/schedule-core-nfr-requirements-plan.md (Q1 언어·프레임워크, Q2 브라우저 저장 방식, Q3 테스트 도구, Q4 빌드·실행 방식, Q5 스타일링). 여기가 기술을 고르는 유일한 자리입니다. 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:A
+Q2 [Answer]:A
+Q3 [Answer]:A
+Q4 [Answer]:A
+Q5 [Answer]:B
+
+### 2026-08-26 12:46 · CONSTRUCTION schedule-core STEP 02 비기능 요구 · 게이트 2
+
+- 물은 것: schedule-core 비기능 요구를 만들었습니다 — aidlc-docs/construction/schedule-core/nfr-requirements/ 에 문서 두 개
+
+tech-stack-decisions.md — 고른 것: TypeScript + React (Q1-A) · localStorage (Q2-A) · Vitest (Q3-A) · Vite (Q4-A) · Tailwind CSS (Q5-B). 각각 왜 골랐는지와 견준 후보를 적었습니다. 이 결정을 나머지 세 단위가 그대로 따릅니다.
+폴더 짜임 — src/domain (계산) · src/storage (보관) · src/ui (화면) · src/app. domain 은 ui 를 가져오지 않습니다 (NFR-5.3). localStorage 를 직접 부르는 곳은 storage/localStore.ts 한 군데입니다.
+명령 — npm install · npm run dev · npm run typecheck · npm test (감시 모드 아님) · npm run build. CONSTRUCTION 06 이 이 명령을 씁니다.
+
+nfr-requirements.md — U-NFR-1 시각 다루기 · U-NFR-2 검증 · U-NFR-3 보안 · U-NFR-4 유지보수 · U-NFR-5 이 단위만으로 서는 것. 이 단위가 지지 않는 NFR 9개는 어느 단위가 지는지 표로 넘겼습니다.
+
+짚어야 할 것 세 가지
+1. Tailwind 는 v4 부터 설정 방식이 바뀌었습니다. @tailwindcss/vite 플러그인과 CSS 한 줄 import 로 끝나고 tailwind.config.js 와 PostCSS 설정이 없습니다. v3 방식으로 만들면 스타일이 조용히 안 먹는 형태로 실패하므로 STEP 05 에서 주의합니다. (출처: tailwindcss.com Vite 설치 안내)
+2. Q2-A localStorage 는 글자만 담으므로 시각이 글자로 오가며 어긋날 위험이 있습니다. U-NFR-1.3 으로 테스트 대상에 넣었습니다.
+3. Vite 는 빌드할 때 값을 결과물에 박아 넣습니다. route-planning 에서 API 키를 다룰 때 브라우저로 내려가는 키는 감춰지지 않는다는 점을 그 단위에서 짚어야 합니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
