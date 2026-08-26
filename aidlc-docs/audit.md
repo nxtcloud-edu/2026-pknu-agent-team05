@@ -152,3 +152,42 @@ C-4 는 지금 시각을 주입받습니다. 실제 시간을 기다리지 않�
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 12:18 · STEP 07 작업 단위 쪼개기 · 게이트 1
+
+- 물은 것: 작업 단위 쪼개기 계획과 질문 4개를 만들었습니다 — aidlc-docs/inception/plans/unit-of-work-plan.md (Q1 단위 이름 규칙, Q2 단위 사이 경계면을 문서로 못 박을지, Q3 단위 완료 기준, Q4 앞 단위를 고쳐야 할 때). 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다 작성했어 다음
+
+Q1 [Answer]:A
+Q2 [Answer]:A
+Q3 [Answer]:B
+Q4 [Answer]:C
+
+### 2026-08-26 12:20 · STEP 07 작업 단위 쪼개기 · 게이트 2
+
+- 물은 것: 작업 단위를 확정했습니다 — aidlc-docs/inception/application-design/unit-of-work.md
+
+단위 넷 (Q1-A)
+1 schedule-core — 일정을 넣고 브라우저에 남긴다 (C-1 · C-5 · C-6 / V-1 · V-2 · V-7 · V-9 / S-1~S-6, S-16)
+2 route-planning — 실제 이동 시간을 받아 동선을 추천한다 (C-2 · C-7 / V-3 / S-7~S-10)
+3 departure-alarm — 출발 시각을 계산해 알림을 걸어둔다 (C-4 / V-8 / S-15)
+4 meetup-midpoint — 약속 중간지점과 장소 후보 (C-3 · C-8 / V-4 · V-5 · V-6 / S-11~S-14)
+
+경계면 네 개를 못 박았습니다 (Q2-A) — ① schedule-core→route-planning (펼쳐진 일정 목록 · 하루 설정 · 설정값) ② route-planning→departure-alarm (동선 결과 또는 도착불가 경고) ③ schedule-core↔meetup-midpoint (약속·참여자 / 확정 장소) ④ meetup-midpoint→route-planning (재계산 요청). 넘기는 것의 의미만 적고 이름·타입은 CONSTRUCTION 01 로 미뤘습니다.
+
+완료 기준 (Q3-B) — 단위마다 계산 단위 테스트 통과. 화면 확인 · 성능 3초 · 탭 닫힌 상태의 실제 알림 · 권한 거부 안내는 완료 기준에서 빼고 CONSTRUCTION 06 으로 넘겼습니다.
+
+앞 단위 수정 (Q4-C) — 그 자리에서 고치는 경우 3가지(버그 · 설계에 예정된 자리 채우기 · 깨지 않는 추가)와 되돌아가는 경우 3가지(확정 요구·설계와 어긋남 · 앞 단위 완료 기준 무효 · NFR-5.1/5.3 위반)를 표로 못 박았습니다. 되돌아가면 mistakes.md 에 남깁니다.
+
+스토리 16개가 모두 단위 하나에만 담깁니다. S-5 · S-11 · S-14 는 다른 단위를 건드리지만 경계면을 통해서만 건드립니다.
+단위별 STEP 02 에서 고를 것도 표로 적었습니다 — schedule-core 에서 언어·프레임워크·저장방식·테스트도구, route-planning 에서 지도 서비스, departure-alarm 에서 알림 방식, meetup-midpoint 에서 장소 검색 서비스.
+
+이 단계에 쌓인 실수: 0건
+
+이것으로 INCEPTION 7단계가 끝납니다. 다음은 CONSTRUCTION 첫 단위 schedule-core 의 STEP 01 기능 설계입니다.
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
