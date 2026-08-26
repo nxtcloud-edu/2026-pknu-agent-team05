@@ -303,3 +303,50 @@ src/app/ — store.ts (화면과 층 2 를 잇는 자리) · App.tsx (패널 열
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 13:29 · CONSTRUCTION route-planning STEP 01 기능 설계 · 게이트 1
+
+- 물은 것: route-planning 기능 설계 계획과 질문 5개를 만들었습니다 — aidlc-docs/construction/plans/route-planning-functional-design-plan.md (Q1 유연형을 고정형 사이에 끼울지, Q2 유연형이 많을 때, Q3 첫 출발 시각, Q4 좌표를 못 찾았을 때, Q5 이동 시간 재조회 시점). 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:B
+Q2 [Answer]:C
+Q3 [Answer]:B
+Q4 [Answer]:A
+Q5 [Answer]:C
+
+### 2026-08-26 13:35 · CONSTRUCTION route-planning STEP 01 기능 설계 · 게이트 2
+
+- 물은 것: route-planning 기능 설계를 만들었습니다 — aidlc-docs/construction/route-planning/functional-design/ 에 문서 네 개
+
+domain-entities.md — R-1 좌표 후보 · R-2 이동 시간 조회 결과 · R-3 캐시 항목 · R-4 구간 · R-5 동선 결과 · R-6 도착 불가 경고 · R-7 빠진 일정. 이 단위는 캐시와 좌표만 보관하고 동선 결과는 보관하지 않습니다.
+business-rules.md — RBR-1~RBR-46 (schedule-core 의 BR- 와 구분). 스토리 수락 기준 대조표 포함.
+business-logic-model.md — C-2 계산 6단계 · 경계 상황 22가지 · C-7 의 캐시/실패 흐름
+frontend-components.md — V-3 동선 결과 (성공 · 도착 불가 · 빠진 일정 · 낡은 값 · 계산 불가 다섯 상태) · PlaceInput 후보 고르기 · 하루 시작 시각 칸
+
+답이 만든 결과와 짚어야 할 것
+
+1. Q2-C 와 FR-2.2 의 긴장 — 가까운 곳부터 이어 붙이는 방식은 총 이동 시간이 가장 짧은 순서를 보장하지 않습니다. FR-2.2 는 그것을 최적화 목표로 정했습니다. 목표는 유지하되 보장하지 않는다고 문서에 명시하고, 화면에 "가까운 곳부터 이어 붙인 순서입니다" 라고 밝히고, 사용자가 손으로 옮길 수 있게 했습니다 (RBR-5). 요구사항 위반으로 보시면 수정 요청을 주십시오.
+
+2. Q1-B 의 결과 — 14시 치과와 19시 약속 사이 4시간이 비어도 장 보기를 그 사이에 넣지 않고 19시 뒤로 보냅니다. 화면에 "3시간 15분 기다림" 이 드러나도록 만들었습니다. 이 결과가 예상과 다르면 Q1-A 로 바꾸는 편이 낫습니다. 대신 계산이 복잡해집니다.
+
+3. 앞 단위를 고쳐야 하는 것 4가지 (unit-of-work.md Q4-C 기준으로 모두 "그 자리에서 고친다")
+· domain/handoff.ts 의 checkRouteReadiness — missing-coords 를 계산 막힘으로 판정하던 것을 Q4-A 에 맞게 푼다
+· domain/settings/ 에 "앞날의 하루 시작 시각" 을 더한다 (Q3-B 가 만든 값)
+· PlaceInput 에 후보 찾기·고르기를 넣는다 (BR-21 이 넘긴 것)
+· DayView 의 "좌표 없음 → 계산할 수 없다" 안내를 "빼고 계산한다" 로 고친다
+checkRouteReadiness 는 schedule-core 의 완료 기준 14가지에 들어 있지 않아 그 기준이 무너지지 않습니다.
+
+4. RBR-13 — 고정형에 일찍 닿아 기다리는 시간을 총 이동 시간에 넣지 않습니다. 넣으면 순서를 견줄 때 엉뚱한 답이 나옵니다. 대신 화면에는 보여줍니다.
+
+5. RBR-43 이 RBR-17 과 다릅니다 — 앱이 정한 순서는 도착 불가면 내지 않지만, 사람이 손으로 잡은 순서는 경고만 하고 막지 않습니다.
+
+외부 지도 서비스는 고르지 않았습니다. 다음 STEP 02 에서 고릅니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
