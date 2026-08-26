@@ -12,3 +12,37 @@
 ```
 
 ---
+
+### 2026-08-26 11:14 · STEP 03 요구사항 분석 · 게이트 1
+
+- 물은 것: 질문 파일을 만들었습니다 — aidlc-docs/inception/requirements/requirement-verification-questions.md (질문 10개: 사용자 수, 참여자 위치 입력 방식, 이동시간 계산 근거, 장소 후보 데이터 출처, "최적"의 기준, 일정 순서 변경 허용 범위, 이동 수단, 알람 방식, 데이터 보관 위치, MVP 제외 항목). 각 [Answer]: 에 답을 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 답했어
+
+Q1 [Answer]:A
+Q2 [Answer]:A
+Q3 [Answer]:A
+Q4 [Answer]:A
+Q5 [Answer]:A
+Q6 [Answer]:B
+Q7 [Answer]:B
+Q8 [Answer]:A
+Q9 [Answer]:A
+Q10 [Answer]:B
+
+### 2026-08-26 11:16 · STEP 03 요구사항 분석 · 게이트 2
+
+- 물은 것: requirements.md 를 만들었습니다 — aidlc-docs/inception/requirements/requirements.md
+
+Intent Analysis: New Project / Complexity Complex / Requirements Depth Comprehensive
+기능 요구 FR-1~FR-7 (일정·할일 등록 9항, 동선 최적화 6항, 약속·중간지점 6항, 장소 후보 5항, 도착시간·출발알람 6항, 실시간 교통 3항, 데이터 보관 2항)
+비기능 요구 NFR-1~NFR-5 (성능 3 · 정확성 4 · 테스트 3 · 보안 4 · 유지보수 3)
+Technical Constraints: Given = 웹 앱 / 브라우저 저장 / 탭 닫혀도 오는 알림 / 외부 지도·길찾기·장소검색 데이터. Excluded = 로그인·회원가입 / 서버 저장 / 외부 캘린더 연동. 언어·프레임워크는 CONSTRUCTION STEP 02 로 미뤘습니다.
+Out of Scope: 캘린더 연동, 로그인·기기간 동기화, 참여자 직접 입력 링크, 협업 편집, 예약·결제, 여러 날 여행 계획
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 요구는 없어 계속 만들어줘

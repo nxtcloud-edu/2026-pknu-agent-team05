@@ -5,8 +5,8 @@
 
 ## 현재 위치
 
-- 단계 — INCEPTION STEP 01 워크스페이스 파악
-- 다음에 할 일 — STEP 02 는 기존 실행 코드가 없어 건너뜀 → STEP 03 요구사항 분석
+- 단계 — INCEPTION STEP 03 요구사항 분석
+- 다음에 할 일 — STEP 04 유저 스토리 — 계획 파일 story-generation-plan.md 작성 후 게이트 1
 - 마지막 갱신 — 2026-08-26
 
 ## 단계는 이렇게 돈다
@@ -23,7 +23,7 @@
 |---|---|---|---|---|
 | [x] | 01 | 워크스페이스 파악 | 완료     | 루트 `spec.md` · `aidlc-state.md` |
 | — | 02 | 기존 코드 역분석 | 건너뜀 · 빈 폴더에서 시작 | — |
-| [ ] | 03 | 요구사항 분석 |  | `inception/requirements/requirements.md` |
+| [x] | 03 | 요구사항 분석 | 완료 · requirement-verification-questions.md · requirements.md| `inception/requirements/requirements.md` |
 | [ ] | 04 | 유저 스토리 |  | `inception/user-stories/stories.md` |
 | [ ] | 05 | 실행 계획 수립 |  | `inception/plans/execution-plan.md` |
 | [ ] | 06 | 애플리케이션 설계 |  | `inception/application-design/components.md` |
