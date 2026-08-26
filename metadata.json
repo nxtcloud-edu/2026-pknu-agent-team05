@@ -1,0 +1,6 @@
+{
+  "name": "외출 동선 도우미",
+  "description": "하루 외출 일정 동선 최적화, 고정/유연 일정 스케줄링, 약속 중간지점 계산 및 장소 추천, 출발 알림 웹 앱",
+  "requestFramePermissions": ["geolocation", "notifications"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
