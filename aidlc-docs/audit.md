@@ -350,3 +350,39 @@ checkRouteReadiness 는 schedule-core 의 완료 기준 14가지에 들어 있�
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 13:44 · CONSTRUCTION route-planning STEP 02 비기능 요구 · 게이트 1
+
+- 물은 것: route-planning 비기능 요구 계획과 질문 5개를 만들었습니다 — aidlc-docs/construction/plans/route-planning-nfr-requirements-plan.md (Q1 외부 서비스, Q2 API 키 다루기, Q3 대중교통 시간을 못 얻을 때, Q4 재시도, Q5 테스트에서 외부 대신하기). 조사로 확인된 것과 확인하지 못한 것을 계획에 함께 적었습니다. 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:B
+Q2 [Answer]:A
+Q3 [Answer]:B
+Q4 [Answer]:B
+Q5 [Answer]:C
+
+### 2026-08-26 13:47 · CONSTRUCTION route-planning STEP 02 비기능 요구 · 게이트 2
+
+- 물은 것: route-planning 비기능 요구를 만들었습니다 — aidlc-docs/construction/route-planning/nfr-requirements/ 에 문서 두 개
+
+고른 것 — 주소↔좌표는 카카오 로컬 REST API · 자동차 이동 시간은 카카오모빌리티 자동차 길찾기 API · 도보와 대중교통은 앱이 자체 계산 · API 키는 .env.local (Q2-A) · 재시도 한 번 (Q4-B) · 테스트는 대역 + 응답 해석 예시 (Q5-C)
+폴더 — src/gateways/ 를 새로 만듭니다. fetch 를 부르는 곳은 gateways/kakao/ 안에만 둡니다. compositeGateway.ts 가 이동 수단에 따라 실제 API 와 자체 계산으로 갈라 보냅니다.
+
+짚어야 할 것 세 가지
+
+1. Q1-B 를 고르고 확인해보니 이동 수단 셋이 갈렸습니다. 자동차만 실제 API 로 실시간 교통이 반영되고, 도보와 대중교통은 어림값입니다. 카카오모빌리티는 도보·자전거 길찾기를 제휴로 제공한다고 안내하고 있고(출처: developers.kakaomobility.com), 카카오 계열에 대중교통 이동 시간 API 가 있는지는 확인하지 못했습니다. 그래서 Q3-B 의 자체 계산을 대중교통뿐 아니라 도보에도 적용했습니다. Q3 은 대중교통만 물었으므로 이 확장이 의도와 다르면 수정 요청을 주십시오.
+
+2. FR-6.1(실시간 교통 반영)이 자동차에만 지켜집니다. 감추지 않기 위해 R-NFR-6 을 새로 만들어 "어림값을 화면에 표시한다" 를 요구로 못 박았습니다. FR-2.2(총 이동 시간 최소화)가 Q2-C 로 보장되지 않는 것과 함께 nfr-requirements.md 끝에 "요구사항과 어긋나는 것" 표로 모아 두었습니다.
+
+3. R-NFR-4.2 — Vite 는 빌드할 때 키를 결과물에 박아 넣습니다. 서버가 없어 키를 대신 들고 있을 곳도 없습니다. Q3-A 로 배포하지 않기 때문에 지금은 감수하고, 인터넷에 올릴 때 다시 봐야 한다고 남겼습니다.
+
+키가 없어도 STEP 05 는 끝까지 진행됩니다. 창구가 자체 계산으로 답하므로 동선 추천·도착 불가 경고·순서 옮기기가 모두 동작합니다. 다만 R-NFR-3.6(응답 해석 테스트)은 응답 예시를 얻을 수 없어 자리만 만들고 비워 둡니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
