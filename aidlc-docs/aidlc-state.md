@@ -5,8 +5,8 @@
 
 ## 현재 위치
 
-- 단계 — INCEPTION STEP 07 작업 단위 쪼개기
-- 다음에 할 일 — CONSTRUCTION 첫 단위 schedule-core · STEP 01 기능 설계 — schedule-core-functional-design-plan.md 작성 후 게이트 1
+- 단계 — CONSTRUCTION STEP 01 · schedule-core
+- 다음에 할 일 — schedule-core STEP 02 비기능 요구 — 여기서 언어·프레임워크·저장방식·테스트도구를 고른다
 - 마지막 갱신 — 2026-08-26
 
 ## 단계는 이렇게 돈다
@@ -51,7 +51,7 @@ INCEPTION STEP 07 에서 단위가 정해지면 채운다. **한 단위를 끝�
 
 | 단위 | 01 기능설계 | 02 비기능요구 | 03 비기능설계 | 04 인프라설계 | 05 코드생성 |
 |---|---|---|---|---|---|
-| (아직 없음) |  |  |  |  |  |
+| schedule-core | 완료 · domain-entities · business-rules · business-logic-model · frontend-components |               |               |               |             |
 
 ### 전부 합쳐 한 번
 

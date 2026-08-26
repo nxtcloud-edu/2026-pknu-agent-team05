@@ -191,3 +191,38 @@ Q4 [Answer]:C
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 12:28 · CONSTRUCTION schedule-core STEP 01 기능 설계 · 게이트 1
+
+- 물은 것: schedule-core 기능 설계 계획과 질문 5개를 만들었습니다 — aidlc-docs/construction/plans/schedule-core-functional-design-plan.md (Q1 반복 범위, Q2 장소 입력 방식, Q3 시간 표현, Q4 하루 출발지·도착지 적용 범위, Q5 지난 날짜 처리). 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:A
+Q2 [Answer]:C
+Q3 [Answer]:A
+Q4 [Answer]:B
+Q5 [Answer]:A
+
+### 2026-08-26 12:33 · CONSTRUCTION schedule-core STEP 01 기능 설계 · 게이트 2
+
+- 물은 것: schedule-core 기능 설계를 만들었습니다 — aidlc-docs/construction/schedule-core/functional-design/ 에 문서 네 개
+
+domain-entities.md — E-1 장소 · E-2 일정 · E-3 반복 규칙 · E-4 하루 설정 · E-5 예외 기록 · E-6 참여자 · E-7 설정. 보관하는 것과 계산되는 것을 갈랐습니다. 동선 순서 · 구간 시각 · 출발 시각은 보관하지 않습니다.
+business-rules.md — BR-1~BR-53. 스토리 수락 기준 24행 대조표를 붙였습니다.
+business-logic-model.md — C-1 펼치기 5단계, 완료 기준이 되는 경계 상황 14가지, 고치기가 직접 넣은 일정과 반복에서 온 일정으로 갈리는 지점.
+frontend-components.md — V-1 하루 보기 · V-2 일정 상세 · V-7 하루 설정 · V-9 데이터 관리. 패널 열림/닫힘 규칙.
+
+답이 만든 결과 세 가지를 짚습니다.
+Q3-A — 지정한 도착 시각과 머무는 시간만 보관하고 끝나는 시각은 보관하지 않습니다. 유연형은 지정한 도착 시각이 빈 칸입니다. 유형에 따라 구조가 달라지지 않고 한 칸이 비는 것으로 갈립니다.
+Q4-B — 하루 설정을 날짜마다 따로 둡니다. 새 날짜를 열면 출발지가 비어 있어 매번 넣어야 합니다. V-7 에 "이 설정은 이 날짜에만 적용됩니다" 안내를 넣었습니다. 이 불편이 예상과 다르면 Q4-C(기본값 두고 날짜별로 덮어쓰기)로 바꾸는 편이 낫습니다.
+Q2-C — 후보를 골라 확정하는 흐름인데, 주소를 좌표로 바꾸는 C-7 지도 창구는 route-planning 단위 소유입니다(components.md). 그래서 이 단위는 좌표를 담을 자리와 고르는 흐름만 만들고, 실제 조회는 route-planning 이 선 뒤에 이어집니다(BR-21, BR-22). 단위 경계를 옮기지 않았으므로 unit-of-work.md 는 고치지 않았습니다. 이 판단이 의도와 다르면 수정 요청을 주십시오.
+
+언어 · 프레임워크 · 저장 기술 · 컴포넌트 라이브러리는 어디에도 적지 않았습니다. 다음 STEP 02 에서 고릅니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 2
