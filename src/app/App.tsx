@@ -12,6 +12,7 @@ import type { DateKey } from '../domain/schedule/types'
 import { DataPanel } from '../ui/DataPanel'
 import { DaySettingPanel } from '../ui/DaySettingPanel'
 import { DayView } from '../ui/DayView'
+import { RouteResult } from '../ui/RouteResult'
 import { SchedulePanel } from '../ui/SchedulePanel'
 import type { ScheduleFormValue } from './store'
 import { useAppStore } from './store'
@@ -70,8 +71,6 @@ export function App() {
             onDateChange={changeDate}
             schedules={store.schedules}
             daySetting={store.daySetting}
-            settings={store.settings}
-            isStale={store.isStale}
             isEmpty={store.isEmpty}
             onOpenSchedule={(schedule) => setPanel({ kind: 'schedule', target: schedule })}
             onOpenNewSchedule={() => setPanel({ kind: 'schedule', target: null })}
@@ -79,6 +78,15 @@ export function App() {
             onOpenData={() => setPanel({ kind: 'data' })}
             onToggleDone={store.toggleDone}
             onInsertExamples={store.insertExamples}
+            routeSlot={
+              <RouteResult
+                state={store.routeState}
+                isStale={store.isStale}
+                onRecalculate={store.recalculate}
+                onMove={store.moveSchedule}
+                onUnpin={store.unpinAll}
+              />
+            }
           />
 
           {/* 한 번에 패널 하나만 */}
@@ -90,6 +98,8 @@ export function App() {
                   date={store.date}
                   target={panel.target}
                   defaultTravelMode={store.settings.user.defaultTravelMode}
+                  searchPlaces={store.searchPlaces}
+                  searchEnabled={store.hasMapKeys}
                   onSave={handleSaveSchedule}
                   onRemove={handleRemoveSchedule}
                   onRemoveRule={handleRemoveRule}
@@ -102,6 +112,8 @@ export function App() {
                   key={store.date}
                   date={store.date}
                   daySetting={store.daySetting}
+                  searchPlaces={store.searchPlaces}
+                  searchEnabled={store.hasMapKeys}
                   onSave={(origin, destination) => {
                     store.saveDaySetting(origin, destination)
                     close()
@@ -114,6 +126,7 @@ export function App() {
                 <DataPanel
                   settings={store.settings}
                   counts={store.counts}
+                  hasMapKeys={store.hasMapKeys}
                   onSaveSettings={store.updateUserSettings}
                   onClearAll={store.clearAllData}
                   onClose={close}

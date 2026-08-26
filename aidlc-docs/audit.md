@@ -386,3 +386,47 @@ Q5 [Answer]:C
 1) 수정 요청
 2) 다음 단계로
 - 답: 2
+
+### 2026-08-26 13:53 · CONSTRUCTION route-planning STEP 05 코드 생성 · 게이트 1
+
+- 물은 것: route-planning 코드 생성 계획과 질문 4개를 만들었습니다 — aidlc-docs/construction/plans/route-planning-code-generation-plan.md (Q1 카카오 호출 코드를 지금 쓸지, Q2 순서 옮기기 조작, Q3 동선 계산 시점, Q4 V-3 완성도). 각 [Answer]: 를 채워 저장해 주세요.
+1) 수정 요청
+2) 다음 단계로
+- 답: 다음
+
+Q1 [Answer]:A
+Q2 [Answer]:A
+Q3 [Answer]:A
+Q4 [Answer]:A
+
+### 2026-08-26 14:16 · CONSTRUCTION route-planning STEP 05 코드 생성 · 게이트 2
+
+- 물은 것: route-planning 코드를 만들었습니다. 코드는 루트 src/ 에, 요약은 aidlc-docs/construction/route-planning/code/summary.md 에 있습니다.
+
+검증 결과
+npm test — 8 파일 212개 통과 (schedule-core 116 + route-planning 96)
+npm run typecheck — 통과
+npm run build — 통과 (CSS 22.06 kB · JS 250.01 kB / gzip 77.06 kB)
+schedule-core 의 테스트 116개가 그대로 통과합니다. 앞 단위를 고쳐도 무너진 것이 없습니다.
+
+만든 것
+src/domain/route/ — types · estimate(Haversine) · order(RBR-1~7) · schedule-times(RBR-8~15) · feasibility(RBR-16~20) · plan(C-2 6단계)
+src/gateways/ — cache(cached/stale 갈림) · retry · kakao/parse · kakao/api(fetch 유일한 곳) · mapGateway(자동차는 외부, 도보·대중교통은 자체계산)
+src/ui/ — RouteResult(V-3 다섯 상태) · PlaceInput 후보 고르기 채움
+.env.local.example — 키 이름만
+
+앞 단위를 고친 것 6곳 (모두 Q4-C 의 "그 자리에서 고침") — handoff.ts 의 checkRouteReadiness · settings 값 7개 추가 · PlaceInput 후보 고르기 · DayView 의 routeSlot 과 안내 문구 · DataPanel 하루 시작 시각 · store.ts 연결. 고친 동작을 못 박기 위해 handoff.test.ts 12개를 새로 만들었습니다.
+
+확인하지 못한 것 세 가지
+1. Q1-A 를 고른 결과 gateways/kakao/ 코드가 실제 키로 검증되지 않았습니다. 파일 머리에 경고를 남기고, 키를 넣을 때 확인할 세 가지를 요약에 적었습니다 — 이동 시간 단위(초로 보고 60으로 나눔) · 좌표 순서(경도 x, 위도 y 로 봄) · 결과 없을 때 모양(빈 배열로 봄). 셋 중 하나라도 틀리면 값이 어긋납니다.
+2. R-NFR-3.6 응답 해석 테스트를 만들지 못했습니다. 응답 예시를 얻을 수 없었습니다. parse.ts 를 따로 떼어 두어 나중에 그 파일만 대상으로 붙일 수 있습니다.
+3. 화면은 손으로 확인하지 못했습니다 (Q3-B · Q5-A 로 CONSTRUCTION 06 으로 넘김). 개발 서버가 HTML·모듈·CSS 를 내려주는 것까지는 확인했습니다.
+
+설계와 다르게 만든 것은 없습니다. 계획 체크리스트 35항 전부 [x] 로 바꿨습니다.
+키가 없어도 앱이 동작합니다. 모든 이동 시간이 어림값이 되고 화면에 어림값이라고 표시됩니다.
+
+이 단계에 쌓인 실수: 0건
+
+1) 수정 요청
+2) 다음 단계로
+- 답: 우선 키 없이 동작. 다른 작업을 진행하기 전에 푸쉬진행

@@ -1,8 +1,13 @@
 // 경계 1 — schedule-core → route-planning
 // 근거: aidlc-docs/inception/application-design/unit-of-work.md 경계 1
 //
-// 이 단위가 route-planning 에 넘기는 것의 모양을 여기 한 군데에 모은다.
-// route-planning 을 만들 때 이 단위의 코드를 다시 읽지 않아도 되게 한다 (Q2-A).
+// route-planning 을 만들 때 schedule-core 의 코드를 다시 읽지 않아도 되게 한다 (Q2-A).
+//
+// ── route-planning STEP 05 에서 고친 것 (unit-of-work.md Q4-C · 그 자리에서 고침) ──
+// Q4-A 로 "좌표 없는 일정은 빼고 나머지로 계산한다" 가 정해졌다.
+// 그래서 `missing-coords` 를 계산 막힘에서 뺐다. 이제 좌표가 없어도 계산은 진행되고,
+// 빠진 일정은 RoutePlan.excluded 에 담겨 화면에 알려진다 (RBR-21 · RBR-22).
+// 좌표 정책은 route-planning 이 정한다고 schedule-core BR-21 에 적혀 있어 예정된 자리다.
 
 import type { ExpandedSchedule } from './schedule/expand'
 import type { DaySetting, TravelMode } from './schedule/types'
@@ -46,16 +51,18 @@ export function buildRoutePlanningInput(args: {
 /**
  * 동선을 계산할 수 있는 상태인지 본다.
  *
- * route-planning 이 서기 전에도 화면이 왜 계산할 수 없는지 알려야 한다 (BR-19 · BR-22).
+ * 좌표가 없는 일정은 **막힘이 아니다.** 빼고 계산한다 (Q4-A · RBR-21).
+ * 몇 개가 빠질지만 알려서 화면이 미리 안내할 수 있게 한다.
  */
 export type RouteReadiness =
-  | { readonly ready: true }
+  | { readonly ready: true; readonly willExclude: readonly string[] }
   | { readonly ready: false; readonly reason: RouteBlockReason }
 
 export type RouteBlockReason =
   | { readonly kind: 'no-day-setting' }
   | { readonly kind: 'no-schedules' }
-  | { readonly kind: 'missing-coords'; readonly titles: readonly string[] }
+  /** 좌표가 없어 뺀 결과 계산할 일정이 하나도 남지 않았다 (RBR-26) */
+  | { readonly kind: 'all-excluded'; readonly titles: readonly string[] }
 
 export function checkRouteReadiness(input: RoutePlanningInput): RouteReadiness {
   // BR-19 출발지가 없으면 계산할 수 없다
@@ -69,14 +76,15 @@ export function checkRouteReadiness(input: RoutePlanningInput): RouteReadiness {
     return { ready: false, reason: { kind: 'no-schedules' } }
   }
 
-  // BR-21 좌표는 route-planning 이 채운다. 아직 없는 것이 있으면 알린다
-  const missing = active
+  // Q4-A 좌표가 없는 일정은 빠지지만 계산은 막지 않는다
+  const willExclude = active
     .filter((schedule) => schedule.place.coord === null)
     .map((schedule) => schedule.title)
 
-  if (missing.length > 0) {
-    return { ready: false, reason: { kind: 'missing-coords', titles: missing } }
+  // RBR-26 다 빠지면 계산할 것이 없다
+  if (willExclude.length === active.length) {
+    return { ready: false, reason: { kind: 'all-excluded', titles: willExclude } }
   }
 
-  return { ready: true }
+  return { ready: true, willExclude }
 }

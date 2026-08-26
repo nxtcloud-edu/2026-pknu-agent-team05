@@ -13,11 +13,13 @@ import {
   PLACE_SEARCH_RADIUS_MIN_METERS,
 } from '../domain/settings'
 import type { Settings, UserSettings } from '../domain/settings'
+import { isValidTime } from '../domain/time'
 import { Button, Field, Notice, Panel, SegmentedControl, TextInput } from './parts'
 
 export function DataPanel({
   settings,
   counts,
+  hasMapKeys,
   onSaveSettings,
   onClearAll,
   onClose,
@@ -29,6 +31,8 @@ export function DataPanel({
     days: number
     participants: number
   }
+  /** 지도 API 키가 하나라도 있는지 — 없으면 어림값만 쓰인다 (R-NFR-4.5) */
+  hasMapKeys: boolean
   onSaveSettings: (next: UserSettings) => void
   onClearAll: () => void
   onClose: () => void
@@ -38,6 +42,7 @@ export function DataPanel({
     settings.user.defaultTravelMode,
   )
   const [radius, setRadius] = useState(String(settings.user.placeSearchRadiusMeters))
+  const [dayStart, setDayStart] = useState(settings.user.dayStartTime)
   const [confirming, setConfirming] = useState(false)
 
   const handleSave = () => {
@@ -49,6 +54,7 @@ export function DataPanel({
         PLACE_SEARCH_RADIUS_MIN_METERS,
         PLACE_SEARCH_RADIUS_MAX_METERS,
       ),
+      dayStartTime: isValidTime(dayStart) ? dayStart : settings.user.dayStartTime,
     })
     onClose()
   }
@@ -94,6 +100,14 @@ export function DataPanel({
             />
           </Field>
 
+          {/* route-planning Q3-B 가 만든 값 (RBR-8) */}
+          <Field label="앞날의 하루 시작 시각" hint="동선 계산의 시작점">
+            <TextInput type="time" value={dayStart} onChange={setDayStart} />
+            <p className="mt-1.5 text-xs leading-relaxed text-ink-400">
+              오늘 동선은 지금 시각을 씁니다. 앞날은 이 시각에 나간다고 보고 계산합니다.
+            </p>
+          </Field>
+
           <Field
             label="출발 알림 여유 시간"
             hint="분 · 출발 알림 기능에서 쓰입니다"
@@ -121,6 +135,16 @@ export function DataPanel({
             여유 시간과 검색 반경은 아직 쓰이지 않습니다. 출발 알림과 중간지점 기능이 붙으면
             이 값을 읽습니다.
           </Notice>
+
+          {!hasMapKeys && (
+            <Notice tone="warn" title="지도 API 키가 없습니다">
+              도보 · 대중교통 이동 시간은 원래 직선거리로 어림합니다. 키가 없으면 자동차도
+              어림값을 씁니다. <code className="text-xs">.env.local</code> 에{' '}
+              <code className="text-xs">VITE_KAKAO_REST_KEY</code> 와{' '}
+              <code className="text-xs">VITE_KAKAO_MOBILITY_KEY</code> 를 넣으면 장소 검색과
+              실시간 자동차 이동 시간이 켜집니다.
+            </Notice>
+          )}
         </section>
 
         <section className="border-t border-ink-100 pt-5">

@@ -5,8 +5,8 @@
 
 ## 현재 위치
 
-- 단계 — CONSTRUCTION STEP 02 · route-planning
-- 다음에 할 일 — route-planning STEP 05 코드 생성 (03·04 건너뜀) — route-planning-code-generation-plan.md 작성 후 게이트 1
+- 단계 — CONSTRUCTION STEP 05 · route-planning
+- 다음에 할 일 — 셋째 단위 departure-alarm · STEP 01 기능 설계 — departure-alarm-functional-design-plan.md 작성 후 게이트 1
 - 마지막 갱신 — 2026-08-26
 
 ## 단계는 이렇게 돈다
@@ -51,7 +51,7 @@ INCEPTION STEP 07 에서 단위가 정해지면 채운다. **한 단위를 끝�
 
 | 단위 | 01 기능설계 | 02 비기능요구 | 03 비기능설계 | 04 인프라설계 | 05 코드생성 |
 |---|---|---|---|---|---|
-| route-planning | 완료 · R-1~R-7 · RBR-1~RBR-46 · C-2 6단계 · V-3 | 완료 · 카카오 로컬+모빌리티, 도보·대중교통은 자체계산 · R-NFR-1~6 |               |               |             |
+| route-planning | 완료 · R-1~R-7 · RBR-1~RBR-46 · C-2 6단계 · V-3 | 완료 · 카카오 로컬+모빌리티, 도보·대중교통은 자체계산 · R-NFR-1~6 |               |               | 완료 · 코드는 루트 src/ · 테스트 212 통과 · 키 없이 어림값으로 동작 |
 | schedule-core | 완료 · domain-entities · business-rules · business-logic-model · frontend-components | 완료 · tech-stack-decisions · nfr-requirements (TS+React·localStorage·Vitest·Vite·Tailwind) |               |               | 완료 · 코드는 루트 src/ · 테스트 116 통과 · code/summary.md |
 
 ### 전부 합쳐 한 번

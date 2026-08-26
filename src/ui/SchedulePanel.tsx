@@ -4,6 +4,7 @@
 // 빈 상태로 열리면 새로 넣는 것, 일정을 들고 열리면 고치는 것이다.
 
 import { useMemo, useState } from 'react'
+import type { PlaceLookup } from '../domain/route/types'
 import type { ExpandedSchedule } from '../domain/schedule/expand'
 import { validateRecurringDraft, validateScheduleDraft } from '../domain/schedule/rules'
 import type { RuleViolation, ScheduleField } from '../domain/schedule/rules'
@@ -19,6 +20,8 @@ export function SchedulePanel({
   date,
   target,
   defaultTravelMode,
+  searchPlaces,
+  searchEnabled,
   onSave,
   onRemove,
   onRemoveRule,
@@ -28,6 +31,8 @@ export function SchedulePanel({
   /** null 이면 새로 넣는 것 */
   target: ExpandedSchedule | null
   defaultTravelMode: TravelMode
+  searchPlaces?: PlaceLookup
+  searchEnabled?: boolean
   onSave: (value: ScheduleFormValue) => void
   onRemove: () => void
   onRemoveRule: (ruleId: string) => void
@@ -160,6 +165,8 @@ export function SchedulePanel({
             place={place}
             onChange={setPlace}
             invalid={errorOf('place') !== undefined}
+            searchPlaces={searchPlaces}
+            searchEnabled={searchEnabled}
           />
         </Field>
 

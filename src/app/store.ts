@@ -4,7 +4,11 @@
 // 화면은 여기에 "해달라"고만 한다. 계산식은 domain/ 에, 저장은 storage/ 에 있다.
 // 이 파일은 둘을 잇기만 하고 스스로 계산하지 않는다.
 
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { buildRoutePlanningInput, checkRouteReadiness } from '../domain/handoff'
+import { moveScheduleInOrder, planRoute } from '../domain/route/plan'
+import { createRouteGateway } from '../gateways/mapGateway'
+import type { RouteViewState } from '../ui/RouteResult'
 import { expandDay, expandedScheduleId } from '../domain/schedule/expand'
 import type { ExpandedSchedule } from '../domain/schedule/expand'
 import { normalizeArrivalTime, resolveTravelMode } from '../domain/schedule/rules'
@@ -390,6 +394,152 @@ export function useAppStore(store: KeyValueStore = browserStore()) {
   const isEmpty =
     data.schedules.length === 0 && data.rules.length === 0 && data.daySettings.length === 0
 
+  // ── route-planning ────────────────────────────────────────
+  // 여기서부터는 route-planning 단위가 더한 것이다.
+
+  /** C-7 지도 창구. 설정이 바뀌면 다시 만든다 */
+  const gateway = useMemo(
+    () => createRouteGateway({ settings: data.settings }),
+    [data.settings],
+  )
+
+  const [routeState, setRouteState] = useState<RouteViewState>({ kind: 'idle' })
+
+  const readiness = useMemo(
+    () =>
+      checkRouteReadiness(
+        buildRoutePlanningInput({
+          date,
+          schedules,
+          daySetting,
+          settings: data.settings,
+        }),
+      ),
+    [date, schedules, daySetting, data.settings],
+  )
+
+  /**
+   * 동선을 계산한다 (Q3-A — 일정이 바뀌면 바로 다시 계산한다).
+   *
+   * 계산 중에 일정이 또 바뀌면 앞 결과를 버린다. 늦게 온 답이 새 결과를 덮어쓰지 않게 한다.
+   */
+  const calculationToken = useRef(0)
+
+  const calculate = useCallback(
+    async (options: { readonly clearCache?: boolean } = {}) => {
+      if (options.clearCache === true) {
+        gateway.clearCache()
+      }
+
+      if (!readiness.ready) {
+        setRouteState({ kind: 'not-ready', reason: readiness.reason })
+        return
+      }
+
+      calculationToken.current += 1
+      const token = calculationToken.current
+      setRouteState({ kind: 'calculating' })
+
+      const result = await planRoute({
+        date,
+        schedules,
+        daySetting,
+        settings: data.settings,
+        lookup: gateway.travelTime,
+        now: new Date(),
+      })
+
+      // 계산 도중에 일정이 바뀌었으면 이 결과를 버린다
+      if (token !== calculationToken.current) return
+
+      setRouteState({ kind: 'done', result })
+      setStaleDates((previous) => {
+        const next = new Set(previous)
+        next.delete(date)
+        return next
+      })
+    },
+    [date, schedules, daySetting, data.settings, gateway, readiness],
+  )
+
+  // Q3-A 일정이나 날짜가 바뀌면 바로 다시 계산한다
+  useEffect(() => {
+    void calculate()
+  }, [calculate])
+
+  /** RBR-42 순서를 한 칸 옮기고 그 자리를 고정한다 */
+  const moveSchedule = useCallback(
+    (scheduleId: string, direction: 'up' | 'down') => {
+      if (routeState.kind !== 'done' || routeState.result.kind !== 'plan') return
+
+      const pins = moveScheduleInOrder(
+        routeState.result.plan.order,
+        scheduleId,
+        direction,
+      )
+      if (pins.length === 0) return
+
+      applyPins(pins)
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [routeState],
+  )
+
+  /** 손으로 잡은 자리를 모두 푼다 (RBR-6) */
+  const unpinAll = useCallback(() => {
+    setData((previous) => ({
+      ...previous,
+      schedules: previous.schedules.map((schedule) =>
+        schedule.pinnedOrder === null ? schedule : { ...schedule, pinnedOrder: null },
+      ),
+      exceptions: previous.exceptions.filter(
+        (exception) =>
+          !(exception.mode === 'modify' && exception.patch.pinnedOrder !== undefined),
+      ),
+    }))
+    markStale(date)
+  }, [date, markStale])
+
+  /**
+   * 고정한 자리를 남긴다.
+   *
+   * 직접 넣은 일정은 그 일정에, 반복에서 온 일정은 `고침` 예외에 남긴다 (BR-35 · BR-41).
+   */
+  const applyPins = useCallback(
+    (pins: readonly { readonly scheduleId: string; readonly pinnedOrder: number }[]) => {
+      setData((previous) => {
+        let next = previous
+
+        for (const pin of pins) {
+          const target = schedules.find((schedule) => schedule.id === pin.scheduleId)
+          if (target === undefined) continue
+
+          if (target.origin.kind === 'direct') {
+            next = {
+              ...next,
+              schedules: next.schedules.map((schedule) =>
+                schedule.id === pin.scheduleId
+                  ? { ...schedule, pinnedOrder: pin.pinnedOrder }
+                  : schedule,
+              ),
+            }
+          } else {
+            next = modifyRecurringOnDate(next, {
+              ruleId: target.origin.ruleId,
+              date,
+              mode: 'modify',
+              patch: { pinnedOrder: pin.pinnedOrder },
+            })
+          }
+        }
+
+        return next
+      })
+      markStale(date)
+    },
+    [date, markStale, schedules],
+  )
+
   return {
     date,
     setDate,
@@ -415,6 +565,14 @@ export function useAppStore(store: KeyValueStore = browserStore()) {
     insertExamples,
     participantsOf,
     ruleOf,
+    // route-planning
+    routeState,
+    readiness,
+    searchPlaces: gateway.searchPlaces,
+    hasMapKeys: gateway.hasKeys(),
+    recalculate: () => void calculate({ clearCache: true }),
+    moveSchedule,
+    unpinAll,
   }
 }
 

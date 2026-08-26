@@ -4,23 +4,18 @@
 // 하루 보기 하나가 늘 떠 있고, 나머지는 패널로 열린다 (Q1-C).
 // 동선 결과 자리는 비워 둔다 — route-planning 이 채운다 (U-NFR-5.2).
 
+import type { ReactNode } from 'react'
 import type { ExpandedSchedule } from '../domain/schedule/expand'
-import { checkRouteReadiness } from '../domain/handoff'
-import type { RouteBlockReason } from '../domain/handoff'
-import { buildRoutePlanningInput } from '../domain/handoff'
 import type { DateKey, DaySetting } from '../domain/schedule/types'
 import { TRAVEL_MODE_LABEL } from '../domain/schedule/types'
-import type { Settings } from '../domain/settings'
 import { endOfSchedule, formatDateLabel, formatDuration, shiftDate, todayKey } from '../domain/time'
-import { Button, KindMark, Notice, RecurringMark } from './parts'
+import { Button, KindMark, RecurringMark } from './parts'
 
 export function DayView({
   date,
   onDateChange,
   schedules,
   daySetting,
-  settings,
-  isStale,
   isEmpty,
   onOpenSchedule,
   onOpenNewSchedule,
@@ -28,13 +23,12 @@ export function DayView({
   onOpenData,
   onToggleDone,
   onInsertExamples,
+  routeSlot,
 }: {
   date: DateKey
   onDateChange: (date: DateKey) => void
   schedules: readonly ExpandedSchedule[]
   daySetting: DaySetting | null
-  settings: Settings
-  isStale: boolean
   isEmpty: boolean
   onOpenSchedule: (schedule: ExpandedSchedule) => void
   onOpenNewSchedule: () => void
@@ -42,11 +36,10 @@ export function DayView({
   onOpenData: () => void
   onToggleDone: (schedule: ExpandedSchedule) => void
   onInsertExamples: () => void
+  /** V-3 동선 결과가 들어오는 자리. route-planning 이 채운다 */
+  routeSlot: ReactNode
 }) {
   const today = todayKey()
-  const readiness = checkRouteReadiness(
-    buildRoutePlanningInput({ date, schedules, daySetting, settings }),
-  )
 
   const activeCount = schedules.filter((schedule) => !schedule.excludedFromRoute).length
   const totalStay = schedules
@@ -94,7 +87,7 @@ export function DayView({
       </header>
 
       {/* 하루 설정 요약 */}
-      <section className="rounded-2xl border border-ink-200 bg-white px-4 py-3">
+      <section id="day-setting" className="rounded-2xl border border-ink-200 bg-white px-4 py-3">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="min-w-0">
             <p className="text-xs text-ink-400">하루 시작과 끝</p>
@@ -143,29 +136,8 @@ export function DayView({
         )}
       </section>
 
-      {/* 동선 결과 자리 — route-planning 이 채운다 */}
-      <section className="rounded-2xl border border-dashed border-ink-300 bg-white/60 px-4 py-5">
-        <div className="flex items-start gap-3">
-          <span className="mt-0.5 text-ink-300">
-            <svg viewBox="0 0 20 20" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.5">
-              <path d="M4 15.5c3 0 3-5.5 6-5.5s3-5.5 6-5.5" strokeLinecap="round" strokeDasharray="3 2.5" />
-              <circle cx="4" cy="15.5" r="1.6" />
-              <circle cx="16" cy="4.5" r="1.6" />
-            </svg>
-          </span>
-          <div className="min-w-0 flex-1">
-            <h2 className="text-sm font-semibold text-ink-600">동선 추천</h2>
-            {isStale && schedules.length > 0 && (
-              <p className="mt-1 text-xs text-amber-700">
-                일정이 바뀌었습니다. 다시 계산해야 합니다.
-              </p>
-            )}
-            <p className="mt-1 text-sm leading-relaxed text-ink-400">
-              {describeBlock(readiness.ready ? null : readiness.reason)}
-            </p>
-          </div>
-        </div>
-      </section>
+      {/* V-3 동선 결과 — route-planning 이 채운다 */}
+      {routeSlot}
     </div>
   )
 }
@@ -238,8 +210,14 @@ function ScheduleRow({
             </span>
             <span className="mt-0.5 block truncate text-xs text-ink-400">
               {schedule.place.query || '장소 없음'}
+              {/* Q4-A 좌표가 없으면 계산을 막는 대신 그 일정만 빠진다 (RBR-21) */}
               {schedule.place.coord === null && schedule.place.query !== '' && (
-                <span className="ml-1 text-amber-600">· 좌표 없음</span>
+                <span
+                  title="장소를 찾지 못해 동선 계산에서 빠집니다"
+                  className="ml-1 text-amber-600"
+                >
+                  · 동선에서 빠짐
+                </span>
               )}
             </span>
           </span>
@@ -300,22 +278,6 @@ function EmptyState({
       )}
     </div>
   )
-}
-
-/** 동선을 계산할 수 없는 이유를 사람 말로 (BR-19 · BR-22) */
-function describeBlock(reason: RouteBlockReason | null): string {
-  if (reason === null) {
-    return '동선을 계산할 준비가 됐습니다. 계산 기능은 다음 작업 단위에서 붙습니다.'
-  }
-
-  switch (reason.kind) {
-    case 'no-day-setting':
-      return '하루의 출발지를 먼저 정해주세요. 출발지가 없으면 첫 구간을 계산할 수 없습니다.'
-    case 'no-schedules':
-      return '계산할 일정이 없습니다. 일정을 넣으면 동선을 추천합니다.'
-    case 'missing-coords':
-      return `좌표를 아직 못 찾은 일정이 있습니다 — ${reason.titles.join(' · ')}. 지도 연동이 붙으면 채워집니다.`
-  }
 }
 
 function IconButton({

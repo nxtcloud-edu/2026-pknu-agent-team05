@@ -4,6 +4,7 @@
 // Q4-B 를 골랐으므로 하루 설정은 날짜마다 따로다. 그 사실을 화면에서 알린다.
 
 import { useState } from 'react'
+import type { PlaceLookup } from '../domain/route/types'
 import type { DateKey, DaySetting, Place } from '../domain/schedule/types'
 import { emptyPlace } from '../domain/schedule/types'
 import { formatDateLabel } from '../domain/time'
@@ -13,11 +14,15 @@ import { Button, Field, Notice, Panel } from './parts'
 export function DaySettingPanel({
   date,
   daySetting,
+  searchPlaces,
+  searchEnabled,
   onSave,
   onClose,
 }: {
   date: DateKey
   daySetting: DaySetting | null
+  searchPlaces?: PlaceLookup
+  searchEnabled?: boolean
   onSave: (origin: Place, destination: Place | null) => void
   onClose: () => void
 }) {
@@ -70,6 +75,8 @@ export function DaySettingPanel({
             onChange={setOrigin}
             invalid={submitted && originMissing}
             placeholder="집 주소 등"
+            searchPlaces={searchPlaces}
+            searchEnabled={searchEnabled}
           />
         </Field>
 
@@ -96,6 +103,8 @@ export function DaySettingPanel({
                   place={destination}
                   onChange={setDestination}
                   placeholder="집 주소 등"
+                  searchPlaces={searchPlaces}
+                  searchEnabled={searchEnabled}
                 />
               </Field>
             </div>
