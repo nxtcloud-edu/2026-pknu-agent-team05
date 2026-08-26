@@ -5,8 +5,8 @@
 
 ## 현재 위치
 
-- 단계 — INCEPTION STEP 05 실행 계획 수립
-- 다음에 할 일 — STEP 06 애플리케이션 설계 — application-design-plan.md 작성 후 게이트 1
+- 단계 — INCEPTION STEP 06 애플리케이션 설계
+- 다음에 할 일 — STEP 07 작업 단위 쪼개기 — unit-of-work-plan.md 작성 후 게이트 1
 - 마지막 갱신 — 2026-08-26
 
 ## 단계는 이렇게 돈다
@@ -26,7 +26,7 @@
 | [x] | 03 | 요구사항 분석 | 완료 · requirement-verification-questions.md · requirements.md| `inception/requirements/requirements.md` |
 | [x] | 04 | 유저 스토리 | 완료 · personas.md · stories.md (S-1~S-16)| `inception/user-stories/stories.md` |
 | [x] | 05 | 실행 계획 수립 | 완료 · execution-plan.md (CONSTRUCTION 03·04 건너뜀 · 단위 4개)| `inception/plans/execution-plan.md` |
-| [ ] | 06 | 애플리케이션 설계 |  | `inception/application-design/components.md` |
+| [x] | 06 | 애플리케이션 설계 | 완료 · components.md (C-1~C-8 · V-1~V-9)| `inception/application-design/components.md` |
 | [ ] | 07 | 작업 단위 쪼개기 |  | `inception/application-design/unit-of-work.md` |
 
 ## CONSTRUCTION — 어떻게 만들지 정한다
